@@ -54,26 +54,26 @@ getExampleAntibiogramDAI<-function(){
   #2011 data, assuming resistance in cases of uncertainty
   #One site is included in this example, but the algorithm can handle multiple sites.
   AntibiogramText = 
-    "site,drug_d,A.baumannii,CoNS,E.coli,E.faecalis,E.faecium,Enterobacter,Klebsiella,P.aeruginosa,Proteus,S.aureus,Serratia
-  A,amika,20,100,0,,,0,0,11,0,100,0
-  A,amox-,, 81,36,0,100,,14,,14, 15,
-  A,ampic,,100,67,0,100,,,,14,100,
-  A,cefaz,, 81,38,,,,100,,100, 15,
-  A,cefta,100, 81,22,,,41,9,24,0, 15,0
-  A,cipro,0,100,37,100,,5,6,33,0,100,0
-  A,clind,, 67,,,,,,,, 45,
-  A,dapto,,  0,,0,0,,,,,  0,
-  A,doxyc,100, 26,41,100,50,33,20,,100,  3,100
-  A,eryth,, 75,,100,100,,,,, 48,
-  A,fosfo,,100,100,100,,100,100,100,100,100,100
-  A,genta,0,100,15,100,100,2,6,27,0,100,0
-  A,linez,,  1,,0,0,,,,,  0,
-  A,merop,0, 81,0,100,,0,0,23,0, 15,0
-  A,nitro,,  0,3,100,100,83,60,,,  0,
-  A,pip-t,0, 81,25,0,100,41,0,18,100, 15,0
-  A,tmp-s,0, 47,26,,,21,14,,0,  1,0
-  A,tobra,0,100,16,,,2,6,11,0,100,0
-  A,vanco,,  0,,0,48,,,,,  0,"
+"site,drug_d,A.baumannii,CoNS,E.coli,E.faecalis,E.faecium,Enterobacter,Klebsiella,P.aeruginosa,Proteus,S.aureus,Serratia
+A,amika,20,100,0,,,0,0,11,0,100,0
+A,amox-,, 81,36,0,100,,14,,14, 15,
+A,ampic,,100,67,0,100,,,,14,100,
+A,cefaz,, 81,38,,,,100,,100, 15,
+A,cefta,100, 81,22,,,41,9,24,0, 15,0
+A,cipro,0,100,37,100,,5,6,33,0,100,0
+A,clind,, 67,,,,,,,, 45,
+A,dapto,,  0,,0,0,,,,,  0,
+A,doxyc,100, 26,41,100,50,33,20,,100,  3,100
+A,eryth,, 75,,100,100,,,,, 48,
+A,fosfo,,100,100,100,,100,100,100,100,100,100
+A,genta,0,100,15,100,100,2,6,27,0,100,0
+A,linez,,  1,,0,0,,,,,  0,
+A,merop,0, 81,0,100,,0,0,23,0, 15,0
+A,nitro,,  0,3,100,100,83,60,,,  0,
+A,pip-t,0, 81,25,0,100,41,0,18,100, 15,0
+A,tmp-s,0, 47,26,,,21,14,,0,  1,0
+A,tobra,0,100,16,,,2,6,11,0,100,0
+A,vanco,,  0,,0,48,,,,,  0,"
   AntibiogramsWide = read.table(text=AntibiogramText,header=TRUE,sep=",",stringsAsFactors=F)
   return(AntibiogramsWide)
 }
@@ -84,26 +84,26 @@ getExampleAntibiogramDAI<-function(){
 #' Drugs=getDrugsDAI()
 getDrugsDAI<-function(){
   DrugsText = 
-    "drug_d,CAUTIgn,CAUTIgp,CLABSIgn,CLABSIgp,VAPgn,VAPgp
-  amika,y,,y,,y,
-  amox-,y,y,y,y,y,y
-  ampic,y,y,y,y,y,y
-  cefaz,y,y,y,y,y,y
-  cefta,y,,y,,y,
-  cipro,y,y,y,y,y,y
-  clind,,,,y,,y
-  dapto,,,,y,,
-  doxyc,y,y,,,,
-  eryth,,,,,,y
-  fosfo,y,y,,,,
-  genta,y,,y,,y,
-  linez,,y,,y,,y
-  merop,y,y,y,y,y,y
-  nitro,y,y,,,,
-  pip-t,y,y,y,y,y,y
-  tmp-s,y,y,y,y,y,y
-  tobra,y,,y,,y,
-  vanco,,y,,y,,y"
+"drug_d,CAUTIgn,CAUTIgp,CLABSIgn,CLABSIgp,VAPgn,VAPgp
+amika,y,,y,,y,
+amox-,y,y,y,y,y,y
+ampic,y,y,y,y,y,y
+cefaz,y,y,y,y,y,y
+cefta,y,,y,,y,
+cipro,y,y,y,y,y,y
+clind,,,,y,,y
+dapto,,,,y,,
+doxyc,y,y,,,,
+eryth,,,,,,y
+fosfo,y,y,,,,
+genta,y,,y,,y,
+linez,,y,,y,,y
+merop,y,y,y,y,y,y
+nitro,y,y,,,,
+pip-t,y,y,y,y,y,y
+tmp-s,y,y,y,y,y,y
+tobra,y,,y,,y,
+vanco,,y,,y,,y"
   DrugsWide = read.table(text=DrugsText,header=TRUE,sep=",",stringsAsFactors=F)
   return(DrugsWide)
 }

@@ -4,7 +4,7 @@
 #The code can be viewed at https://github.com/josie-hughes/EmpiricTherapyIndices/blob/master/R/EmpiricTherapyIndicesFns.R.
 #Install the package.
 install.packages(c("devtools","plyr","tidyr"))
-library(devtools);install_github("josie-hughes/EmpiricTherapyIndices")
+devtools::install_github("josie-hughes/EmpiricTherapyIndices")
 library(EmpiricTherapyIndices)
 #Example calculation.
 EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
