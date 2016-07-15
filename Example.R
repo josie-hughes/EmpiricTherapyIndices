@@ -3,10 +3,9 @@
 #The methods are described in Hughes et al. 2016. Empiric therapy indices: novel measures of the impact of antibiotic resistance on populations.
 #The code can be viewed at https://github.com/josie-hughes/EmpiricTherapyIndices/blob/master/R/EmpiricTherapyIndicesFns.R.
 #Install the package.
-install.packages("devtools")
-library(devtools);install_github("josie-hughes/EmpiricTherapyIndices");devtools::document()
+install.packages(c("devtools","plyr","tidyr"))
+library(devtools);install_github("josie-hughes/EmpiricTherapyIndices")
 library(EmpiricTherapyIndices)
-
 #Example calculation.
 EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
 
@@ -22,3 +21,6 @@ write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.n
 myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
 EmpiricTherapyIndicesDAI(myRevisedAbg)
 
+#Remove reserve drugs
+
+ReserveDrugs = c("merop",)
