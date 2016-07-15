@@ -13,7 +13,16 @@ An example antibiogram. Numbers are percent resistant (or non-susceptible).
 An example antibiogram.
 }
 \examples{
-Antibiograms=getExampleAntibiogramDAI()
-indices = EmpiricTherapyIndicesDAI(eAntibiograms)
+#Revise the antibiogram and recalculate. PDR Acinetobacter example
+pdrAcinetoAbg = getExampleAntibiogramDAI()
+pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
+EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
+
+#Save antibiogram template as a delimited text file - can be edited in Excel
+write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\\t",row.names=F)
+
+#Load revised antibiogram and calculate indices
+myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
+EmpiricTherapyIndicesDAI(myRevisedAbg)
 }
 

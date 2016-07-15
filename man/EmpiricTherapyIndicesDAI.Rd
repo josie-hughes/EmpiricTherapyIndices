@@ -21,6 +21,19 @@ Empiric options index (EOI) and empiric coverage index (ECI) for each site.
 Calculate empiric therapy indices for device-associated infections.
 }
 \examples{
+#Example calculation - 2011 in the worst case
 EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
+
+#Revise the antibiogram and recalculate. PDR Acinetobacter example
+pdrAcinetoAbg = getExampleAntibiogramDAI()
+pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
+EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
+
+#Save antibiogram template as a delimited text file - can be edited in Excel
+write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\\t",row.names=F)
+
+#Load revised antibiogram and calculate indices
+myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
+EmpiricTherapyIndicesDAI(myRevisedAbg)
 }
 

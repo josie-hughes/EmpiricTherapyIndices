@@ -7,9 +7,24 @@ library(tidyr);library(plyr)
 #' @param Drugs The set of available drugs. getDrugsDAI() for example.
 #' @return Empiric options index (EOI) and empiric coverage index (ECI) for each site.
 #' @examples
+#' #Example calculation - 2011 in the worst case
 #' EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
+#' 
+#' #Revise the antibiogram and recalculate. PDR Acinetobacter example
+#' pdrAcinetoAbg = getExampleAntibiogramDAI()
+#' pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
+#' EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
+#' 
+#' #Save antibiogram template as a delimited text file - can be edited in Excel
+#' write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
+#' 
+#' #Load revised antibiogram and calculate indices
+#' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
+#' EmpiricTherapyIndicesDAI(myRevisedAbg)
 EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getDrugsDAI(),wide=T){
+  #Antibiograms=getExampleAntibiogramDAI();Basket=getBasketDAI();Drugs=getDrugsDAI();wide=T
   if(wide){dat=EIMakeLong(Antibiograms,Basket,Drugs);Antibiograms=dat$Antibiograms;Basket=dat$Basket;Drugs=dat$Drugs}
+  checkData(Antibiograms,Basket,Drugs)
   coverage = getCoverage(Antibiograms,Basket,Drugs)
   ECIy = ddply(coverage,.(site,syndrome_y,alpha_y),summarise,ECIy=max(V))
   ECI = ddply(ECIy,.(site),summarise,value=100*sum(alpha_y*ECIy))
@@ -20,6 +35,27 @@ EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getD
   indices = rbind(EOI,ECI)
   return(indices) 
 }
+checkData<-function(Antibiograms,Basket,Drugs){
+  #check for consistency among data sources, and return error if there is a problem
+  abgSp = unique(Antibiograms$species_s)
+  bSp = unique(Basket$species_s)
+  msg = paste("Species in the antibiogram are not in the basket:",paste(setdiff(abgSp,bSp),collapse=","))
+  try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
+  msg = paste("Species in the basket are not in the antibiogram:",paste(setdiff(bSp,abgSp),collapse=","))
+  try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
+  
+  abgD = unique(Antibiograms$drug_d)
+  bD = unique(Drugs$drug_d)
+  msg = paste("Drugs in the antibiogram are not in the set of available drugs:",paste(setdiff(abgD,bD),collapse=","))
+  try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
+  msg = paste("Drugs in the available set are not in the antibiogram:",paste(setdiff(bD,abgD),collapse=","))
+  try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
+  
+  try(if(max(Antibiograms$resistance)>100) stop("Resistance in the antibiogram should not exceed 100%"))
+  try(if(max(Antibiograms$resistance)<0) stop("Resistance in the antibiogram should not be less than 0%"))  
+}
+
+
 getEOIy<-function(covBit){
   covBit=covBit[order(-covBit$V),]
   covBit$d = seq(1,nrow(covBit))
@@ -97,8 +133,17 @@ VAPgp, 6,,3,,2,1,,,,,93,"
 #' An example antibiogram. 
 #' @return An example antibiogram. Numbers are percent resistant (or non-susceptible).
 #' @examples
-#' Antibiograms=getExampleAntibiogramDAI()
-#' indices = EmpiricTherapyIndicesDAI(eAntibiograms)
+#' #Revise the antibiogram and recalculate. PDR Acinetobacter example
+#' pdrAcinetoAbg = getExampleAntibiogramDAI()
+#' pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
+#' EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
+#' 
+#' #Save antibiogram template as a delimited text file - can be edited in Excel
+#' write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
+#' 
+#' #Load revised antibiogram and calculate indices
+#' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
+#' EmpiricTherapyIndicesDAI(myRevisedAbg)
 getExampleAntibiogramDAI<-function(){
   #Example antibiogram. Numbers are percent resistance (or non-susceptibility). 
   #2011 data, assuming resistance in cases of uncertainty
