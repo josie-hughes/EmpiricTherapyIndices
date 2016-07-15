@@ -15,7 +15,7 @@ library(tidyr);library(plyr)
 #' pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
 #' EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
 #' 
-#' #Save antibiogram template as a delimited text file - can be edited in Excel
+#' #Save antibiogram template as a delimited text file - can be edited in Excel.
 #' write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
 #' 
 #' #Load revised antibiogram and calculate indices
@@ -35,6 +35,97 @@ EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getD
   indices = rbind(EOI,ECI)
   return(indices) 
 }
+#' An example antibiogram. 
+#' @return An example antibiogram. Numbers are percent resistant (or non-susceptible).
+#' @examples
+#' #Revise the antibiogram and recalculate. PDR Acinetobacter example
+#' pdrAcinetoAbg = getExampleAntibiogramDAI()
+#' pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
+#' EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
+#' 
+#' #Save antibiogram template as a delimited text file - can be edited in Excel
+#' write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
+#' 
+#' #Load revised antibiogram and calculate indices
+#' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
+#' EmpiricTherapyIndicesDAI(myRevisedAbg)
+getExampleAntibiogramDAI<-function(){
+  #Example antibiogram. Numbers are percent resistance (or non-susceptibility). 
+  #2011 data, assuming resistance in cases of uncertainty
+  #One site is included in this example, but the algorithm can handle multiple sites.
+  AntibiogramText = 
+    "site,drug_d,A.baumannii,CoNS,E.coli,E.faecalis,E.faecium,Enterobacter,Klebsiella,P.aeruginosa,Proteus,S.aureus,Serratia
+  A,amika,20,100,0,,,0,0,11,0,100,0
+  A,amox-,, 81,36,0,100,,14,,14, 15,
+  A,ampic,,100,67,0,100,,,,14,100,
+  A,cefaz,, 81,38,,,,100,,100, 15,
+  A,cefta,100, 81,22,,,41,9,24,0, 15,0
+  A,cipro,0,100,37,100,,5,6,33,0,100,0
+  A,clind,, 67,,,,,,,, 45,
+  A,dapto,,  0,,0,0,,,,,  0,
+  A,doxyc,100, 26,41,100,50,33,20,,100,  3,100
+  A,eryth,, 75,,100,100,,,,, 48,
+  A,fosfo,,100,100,100,,100,100,100,100,100,100
+  A,genta,0,100,15,100,100,2,6,27,0,100,0
+  A,linez,,  1,,0,0,,,,,  0,
+  A,merop,0, 81,0,100,,0,0,23,0, 15,0
+  A,nitro,,  0,3,100,100,83,60,,,  0,
+  A,pip-t,0, 81,25,0,100,41,0,18,100, 15,0
+  A,tmp-s,0, 47,26,,,21,14,,0,  1,0
+  A,tobra,0,100,16,,,2,6,11,0,100,0
+  A,vanco,,  0,,0,48,,,,,  0,"
+  AntibiogramsWide = read.table(text=AntibiogramText,header=TRUE,sep=",",stringsAsFactors=F)
+  return(AntibiogramsWide)
+}
+#' Available drugs for device associated infections. 
+#' 
+#' @return The set of available drugs.
+#' @examples
+#' Drugs=getDrugsDAI()
+getDrugsDAI<-function(){
+  DrugsText = 
+    "drug_d,CAUTIgn,CAUTIgp,CLABSIgn,CLABSIgp,VAPgn,VAPgp
+  amika,y,,y,,y,
+  amox-,y,y,y,y,y,y
+  ampic,y,y,y,y,y,y
+  cefaz,y,y,y,y,y,y
+  cefta,y,,y,,y,
+  cipro,y,y,y,y,y,y
+  clind,,,,y,,y
+  dapto,,,,y,,
+  doxyc,y,y,,,,
+  eryth,,,,,,y
+  fosfo,y,y,,,,
+  genta,y,,y,,y,
+  linez,,y,,y,,y
+  merop,y,y,y,y,y,y
+  nitro,y,y,,,,
+  pip-t,y,y,y,y,y,y
+  tmp-s,y,y,y,y,y,y
+  tobra,y,,y,,y,
+  vanco,,y,,y,,y"
+  DrugsWide = read.table(text=DrugsText,header=TRUE,sep=",",stringsAsFactors=F)
+  return(DrugsWide)
+}
+#' The basket of device-associated infections. 
+#' 
+#' @return The basket of device-associate drugs.
+#' @examples
+#' Basket=getBasketDAI()
+getBasketDAI<-function(){
+  BasketText = 
+    "syndrome_y,alpha_y,A.baumannii,CoNS,E.coli,E.faecalis,E.faecium,Enterobacter,Klebsiella,P.aeruginosa,Proteus,S.aureus,Serratia
+CAUTIgn,28,1,,45,,,7,19,19,8,,2
+CAUTIgp, 7,,15,,49,21,,,,,14,
+CLABSIgn,16,8,,16,,,18,31,15,3,,10
+CLABSIgp,30,,42,,18,14,,,,,25,
+VAPgn,13,12,,11,,,16,19,31,3,,9
+VAPgp, 6,,3,,2,1,,,,,93,"
+  BasketWide <- read.table(text=BasketText,header=TRUE,sep=",",stringsAsFactors=F)
+  return(BasketWide)
+}
+#################
+#internal functions
 checkData<-function(Antibiograms,Basket,Drugs){
   #check for consistency among data sources, and return error if there is a problem
   abgSp = unique(Antibiograms$species_s)
@@ -43,19 +134,15 @@ checkData<-function(Antibiograms,Basket,Drugs){
   try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
   msg = paste("Species in the basket are not in the antibiogram:",paste(setdiff(bSp,abgSp),collapse=","))
   try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
-  
   abgD = unique(Antibiograms$drug_d)
   bD = unique(Drugs$drug_d)
   msg = paste("Drugs in the antibiogram are not in the set of available drugs:",paste(setdiff(abgD,bD),collapse=","))
   try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
   msg = paste("Drugs in the available set are not in the antibiogram:",paste(setdiff(bD,abgD),collapse=","))
   try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
-  
   try(if(max(Antibiograms$resistance)>100) stop("Resistance in the antibiogram should not exceed 100%"))
   try(if(max(Antibiograms$resistance)<0) stop("Resistance in the antibiogram should not be less than 0%"))  
 }
-
-
 getEOIy<-function(covBit){
   covBit=covBit[order(-covBit$V),]
   covBit$d = seq(1,nrow(covBit))
@@ -82,95 +169,6 @@ EIMakeLong<-function(AntibiogramsWide,BasketWide,DrugsWide){
   Antibiograms=subset(Antibiograms,!is.na(resistance))
   Antibiograms$resistance = Antibiograms$resistance/100
   return(list(Antibiograms=Antibiograms,Basket=Basket,Drugs=Drugs))
-}
-#' Available drugs for device associated infections. 
-#' 
-#' @return The set of available drugs.
-#' @examples
-#' Drugs=getDrugsDAI()
-getDrugsDAI<-function(){
-  DrugsText = 
-"drug_d,CAUTIgn,CAUTIgp,CLABSIgn,CLABSIgp,VAPgn,VAPgp
-amika,y,,y,,y,
-amox-,y,y,y,y,y,y
-ampic,y,y,y,y,y,y
-cefaz,y,y,y,y,y,y
-cefta,y,,y,,y,
-cipro,y,y,y,y,y,y
-clind,,,,y,,y
-dapto,,,,y,,
-doxyc,y,y,,,,
-eryth,,,,,,y
-fosfo,y,y,,,,
-genta,y,,y,,y,
-linez,,y,,y,,y
-merop,y,y,y,y,y,y
-nitro,y,y,,,,
-pip-t,y,y,y,y,y,y
-tmp-s,y,y,y,y,y,y
-tobra,y,,y,,y,
-vanco,,y,,y,,y"
-  DrugsWide = read.table(text=DrugsText,header=TRUE,sep=",",stringsAsFactors=F)
-  return(DrugsWide)
-}
-#' The basket of device-associated infections. 
-#' 
-#' @return The basket of device-associate drugs.
-#' @examples
-#' Basket=getBasketDAI()
-getBasketDAI<-function(){
-  BasketText = 
-"syndrome_y,alpha_y,A.baumannii,CoNS,E.coli,E.faecalis,E.faecium,Enterobacter,Klebsiella,P.aeruginosa,Proteus,S.aureus,Serratia
-CAUTIgn,28,1,,45,,,7,19,19,8,,2
-CAUTIgp, 7,,15,,49,21,,,,,14,
-CLABSIgn,16,8,,16,,,18,31,15,3,,10
-CLABSIgp,30,,42,,18,14,,,,,25,
-VAPgn,13,12,,11,,,16,19,31,3,,9
-VAPgp, 6,,3,,2,1,,,,,93,"
-  BasketWide <- read.table(text=BasketText,header=TRUE,sep=",",stringsAsFactors=F)
-  return(BasketWide)
-}
-#' An example antibiogram. 
-#' @return An example antibiogram. Numbers are percent resistant (or non-susceptible).
-#' @examples
-#' #Revise the antibiogram and recalculate. PDR Acinetobacter example
-#' pdrAcinetoAbg = getExampleAntibiogramDAI()
-#' pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
-#' EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
-#' 
-#' #Save antibiogram template as a delimited text file - can be edited in Excel
-#' write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
-#' 
-#' #Load revised antibiogram and calculate indices
-#' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
-#' EmpiricTherapyIndicesDAI(myRevisedAbg)
-getExampleAntibiogramDAI<-function(){
-  #Example antibiogram. Numbers are percent resistance (or non-susceptibility). 
-  #2011 data, assuming resistance in cases of uncertainty
-  #One site is included in this example, but the algorithm can handle multiple sites.
-  AntibiogramText = 
-"site,drug_d,A.baumannii,CoNS,E.coli,E.faecalis,E.faecium,Enterobacter,Klebsiella,P.aeruginosa,Proteus,S.aureus,Serratia
-A,amika,20,100,0,,,0,0,11,0,100,0
-A,amox-,, 81,36,0,100,,14,,14, 15,
-A,ampic,,100,67,0,100,,,,14,100,
-A,cefaz,, 81,38,,,,100,,100, 15,
-A,cefta,100, 81,22,,,41,9,24,0, 15,0
-A,cipro,0,100,37,100,,5,6,33,0,100,0
-A,clind,, 67,,,,,,,, 45,
-A,dapto,,  0,,0,0,,,,,  0,
-A,doxyc,100, 26,41,100,50,33,20,,100,  3,100
-A,eryth,, 75,,100,100,,,,, 48,
-A,fosfo,,100,100,100,,100,100,100,100,100,100
-A,genta,0,100,15,100,100,2,6,27,0,100,0
-A,linez,,  1,,0,0,,,,,  0,
-A,merop,0, 81,0,100,,0,0,23,0, 15,0
-A,nitro,,  0,3,100,100,83,60,,,  0,
-A,pip-t,0, 81,25,0,100,41,0,18,100, 15,0
-A,tmp-s,0, 47,26,,,21,14,,0,  1,0
-A,tobra,0,100,16,,,2,6,11,0,100,0
-A,vanco,,  0,,0,48,,,,,  0,"
-  AntibiogramsWide = read.table(text=AntibiogramText,header=TRUE,sep=",",stringsAsFactors=F)
-  return(AntibiogramsWide)
 }
 
 
