@@ -1,18 +1,4 @@
-#to make package
-#https://cran.r-project.org/doc/contrib/Leisch-CreatingPackages.pdf
-#Make initial package skeleton using package.skeleton(name="EmpiricTherapyIndices",code_files="EmpiricIndicesFns.R")
-#Automatic documentation http://r-pkgs.had.co.nz/man.html
-#Add roxygen comments to .R files.
-#Click build an reload
-#Run devtools::document() (or press Ctrl/Cmd + Shift + D in RStudio) to convert roxygen comments to .Rd files. (devtools::document() calls roxygen2::roxygenise() to do the hard work.)
-#Preview documentation with ?.
-#Rinse and repeat until the documentation looks the way you want.
-#install.packages("roxygen2"); install.packages("devtools")
-#update files on github
-#library(devtools); install_github("josie-hughes/EmpiricTherapyIndices");library(EmpiricTherapyIndices)
-#EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
-
-library(tidyr)
+library(tidyr);library(plyr)
 #' Calculate empiric therapy indices for device-associated infections.
 #' 
 #' @param Antibiograms An antibiogram. getExampleAntibiograms() for example. Numbers are percent resistance (or non-susceptibility). One site is included in the example, but the algorithm can handle multiple sites.
