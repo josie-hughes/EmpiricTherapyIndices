@@ -1,0 +1,12 @@
+Package: EmpiricTherapyIndices
+Type: Package
+Title: Calculate empiric therapy indices for device-associated infections.
+Version: 1.0
+Date: 2016-07-14
+Author: Josie Hughes
+Maintainer: Josie Hughes <josie.s.hughes@gmail.com>
+Description: This package calculates the empiric therapy indices for device-
+    associated infections described in Hughes et al. 2016. Empiric therapy indices:
+    novel measures of the impact of antibiotic resistance on populations. BMJ Open.
+License: GPL-2
+RoxygenNote: 5.0.1
