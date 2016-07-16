@@ -5,7 +5,8 @@
 #Install the package.
 install.packages(c("devtools","plyr","tidyr"))
 library(devtools)
-devtools::install_github("josie-hughes/EmpiricTherapyIndices")
+devtools::install_github("josie-hughes/EmpiricTherapyIndices",force=T)
+devtools::document("EmpiricTherapyIndices")
 library(EmpiricTherapyIndices)
 
 #Example calculation.
