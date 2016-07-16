@@ -21,6 +21,7 @@
 #' #Load revised antibiogram and calculate indices
 #' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
 #' EmpiricTherapyIndicesDAI(myRevisedAbg)
+#' @export
 EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getDrugsDAI(),wide=T){
   #Antibiograms=getExampleAntibiogramDAI();Basket=getBasketDAI();Drugs=getDrugsDAI();wide=T
   if(wide){dat=EIMakeLong(Antibiograms,Basket,Drugs);Antibiograms=dat$Antibiograms;Basket=dat$Basket;Drugs=dat$Drugs}
@@ -49,6 +50,7 @@ EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getD
 #' #Load revised antibiogram and calculate indices
 #' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
 #' EmpiricTherapyIndicesDAI(myRevisedAbg)
+#' @export
 getExampleAntibiogramDAI<-function(){
   #Example antibiogram. Numbers are percent resistance (or non-susceptibility). 
   #2011 data, assuming resistance in cases of uncertainty
@@ -82,6 +84,7 @@ A,vanco,,  0,,0,48,,,,,  0,"
 #' @return The set of available drugs.
 #' @examples
 #' Drugs=getDrugsDAI()
+#' @export
 getDrugsDAI<-function(){
   DrugsText = 
 "drug_d,CAUTIgn,CAUTIgp,CLABSIgn,CLABSIgp,VAPgn,VAPgp
@@ -112,6 +115,7 @@ vanco,,y,,y,,y"
 #' @return The basket of device-associate drugs.
 #' @examples
 #' Basket=getBasketDAI()
+#' @export
 getBasketDAI<-function(){
   BasketText = 
     "syndrome_y,alpha_y,A.baumannii,CoNS,E.coli,E.faecalis,E.faecium,Enterobacter,Klebsiella,P.aeruginosa,Proteus,S.aureus,Serratia
