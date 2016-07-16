@@ -24,7 +24,7 @@
 EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getDrugsDAI(),wide=T){
   #Antibiograms=getExampleAntibiogramDAI();Basket=getBasketDAI();Drugs=getDrugsDAI();wide=T
   if(wide){dat=EIMakeLong(Antibiograms,Basket,Drugs);Antibiograms=dat$Antibiograms;Basket=dat$Basket;Drugs=dat$Drugs}
-  checkData(Antibiograms,Basket,Drugs)
+  checkDataDAI(Antibiograms,Basket,Drugs)
   coverage = getCoverage(Antibiograms,Basket,Drugs)
   ECIy = ddply(coverage,.(site,syndrome_y,alpha_y),summarise,ECIy=max(V))
   ECI = ddply(ECIy,.(site),summarise,value=100*sum(alpha_y*ECIy))
@@ -126,7 +126,7 @@ VAPgp, 6,,3,,2,1,,,,,93,"
 }
 #################
 #internal functions
-checkData<-function(Antibiograms,Basket,Drugs){
+checkDataDAI<-function(Antibiograms,Basket,Drugs){
   #check for consistency among data sources, and return error if there is a problem
   abgSp = unique(Antibiograms$species_s)
   bSp = unique(Basket$species_s)
