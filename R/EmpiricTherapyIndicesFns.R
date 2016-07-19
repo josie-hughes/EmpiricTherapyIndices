@@ -1,4 +1,3 @@
-#library(tidyr);library(plyr)
 #' Calculate empiric therapy indices for device-associated infections.
 #' 
 #' @param Antibiograms An antibiogram. getExampleAntibiograms() for example. Numbers are percent resistance (or non-susceptibility). One site is included in the example, but the algorithm can handle multiple sites.
