@@ -7,23 +7,28 @@
 #' @param Drugs The set of available drugs. getDrugsDAI() for example.
 #' @return Empiric options index (EOI) and empiric coverage index (ECI) for each site.
 #' @examples
-#' #Example calculation - 2011 in the worst case
-#' EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
-#' 
-#' #Revise the antibiogram and recalculate. PDR Acinetobacter example
-#' pdrAcinetoAbg = getExampleAntibiogramDAI()
-#' pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
-#' EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
-#' 
-#' #Save antibiogram template as a delimited text file - can be edited in Excel.
-#' write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
-#' 
-#' #Load revised antibiogram and calculate indices
-#' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
-#' EmpiricTherapyIndicesDAI(myRevisedAbg)
+#'#Example calculation.
+#'EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
+#'
+#'#Revise the antibiogram and recalculate. PDR Acinetobacter example
+#'pdrAcinetoAbg = getExampleAntibiogramDAI()
+#'pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
+#'EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
+#'
+#'#Save the example antibiogram as a delimited text file that can be edited in Excel
+#'write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
+#'
+#Load a revised antibiogram and calculate the indices.
+#'myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
+#'EmpiricTherapyIndicesDAI(myRevisedAbg)
+#'
+#'#Calculate the indices without reserve drugs
+#'ReserveDrugs = c("amika","cefta","dapto","eryth","genta","linez","merop","tobra")
+#'abgWithoutReserves = subset(getExampleAntibiogramDAI(),!is.element(drug_d,ReserveDrugs))
+#'EmpiricTherapyIndicesDAI(abgWithoutReserves)
 #' @export
 EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getDrugsDAI(),wide=T){
-  #Antibiograms=getExampleAntibiogramDAI();Basket=getBasketDAI();Drugs=getDrugsDAI();wide=T
+  #Antibiograms=abgWithoutReserves;Basket=getBasketDAI();Drugs=getDrugsDAI();wide=T
   if(wide){dat=EIMakeLong(Antibiograms,Basket,Drugs);Antibiograms=dat$Antibiograms;Basket=dat$Basket;Drugs=dat$Drugs}
   checkDataDAI(Antibiograms,Basket,Drugs)
   coverage = getCoverage(Antibiograms,Basket,Drugs)
@@ -39,17 +44,22 @@ EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getD
 #' An example antibiogram. 
 #' @return An example antibiogram. Numbers are percent resistant (or non-susceptible).
 #' @examples
-#' #Revise the antibiogram and recalculate. PDR Acinetobacter example
-#' pdrAcinetoAbg = getExampleAntibiogramDAI()
-#' pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
-#' EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
-#' 
-#' #Save antibiogram template as a delimited text file - can be edited in Excel
-#' write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
-#' 
-#' #Load revised antibiogram and calculate indices
-#' myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
-#' EmpiricTherapyIndicesDAI(myRevisedAbg)
+#'#Revise the antibiogram and recalculate. PDR Acinetobacter example
+#'pdrAcinetoAbg = getExampleAntibiogramDAI()
+#'pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
+#'EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
+#'
+#'#Save the example antibiogram as a delimited text file that can be edited in Excel
+#'write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\t",row.names=F)
+#'
+#Load a revised antibiogram and calculate the indices.
+#'myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
+#'EmpiricTherapyIndicesDAI(myRevisedAbg)
+#'
+#'#Calculate the indices without reserve drugs
+#'ReserveDrugs = c("amika","cefta","dapto","eryth","genta","linez","merop","tobra")
+#'abgWithoutReserves = subset(getExampleAntibiogramDAI(),!is.element(drug_d,ReserveDrugs))
+#'EmpiricTherapyIndicesDAI(abgWithoutReserves)
 #' @export
 getExampleAntibiogramDAI<-function(){
   #Example antibiogram. Numbers are percent resistance (or non-susceptibility). 
@@ -140,10 +150,12 @@ checkDataDAI<-function(Antibiograms,Basket,Drugs){
   try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
   abgD = unique(Antibiograms$drug_d)
   bD = unique(Drugs$drug_d)
-  msg = paste("Drugs in the antibiogram are not in the set of available drugs:",paste(setdiff(abgD,bD),collapse=","))
-  try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
-  msg = paste("Drugs in the available set are not in the antibiogram:",paste(setdiff(bD,abgD),collapse=","))
-  try(if(length(setdiff(abgSp,bSp))>0) stop(msg))
+  msg = paste("Drugs in the antibiogram are not in the set of available drugs, and will be ignored:",paste(setdiff(abgD,bD),collapse=","))
+  if(length(setdiff(abgD,bD))>0)(warning(msg))
+  #try(if(length(setdiff(abgD,bD))>0) stop(msg))
+  msg = paste("Drugs in the available set are not in the antibiogram - the algorithms will assume resistance:",paste(setdiff(bD,abgD),collapse=","))
+  if(length(setdiff(bD,abgD))>0)(warning(msg))
+  #try(if(length(setdiff(bD,abgD))>0) stop(msg))
   try(if(max(Antibiograms$resistance)>100) stop("Resistance in the antibiogram should not exceed 100%"))
   try(if(max(Antibiograms$resistance)<0) stop("Resistance in the antibiogram should not be less than 0%"))  
 }
