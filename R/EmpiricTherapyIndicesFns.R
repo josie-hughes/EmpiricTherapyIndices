@@ -1,4 +1,3 @@
-#library(tidyr);library(plyr)
 #' Calculate empiric therapy indices for device-associated infections.
 #' 
 #' @param Antibiograms An antibiogram. getExampleAntibiograms() for example. Numbers are percent resistance (or non-susceptibility). One site is included in the example, but the algorithm can handle multiple sites.
@@ -7,7 +6,7 @@
 #' @param Drugs The set of available drugs. getDrugsDAI() for example.
 #' @return Empiric options index (EOI) and empiric coverage index (ECI) for each site.
 #' @examples
-#'#Example calculation.
+#'#Example calculation:
 #'EmpiricTherapyIndicesDAI(getExampleAntibiogramDAI())
 #'
 #'#Revise the antibiogram and recalculate. PDR Acinetobacter example
@@ -56,7 +55,7 @@ EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getD
 #'myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
 #'EmpiricTherapyIndicesDAI(myRevisedAbg)
 #'
-#'#Calculate the indices without reserve drugs
+#'#Calculate the indices without reserve drugs:
 #'ReserveDrugs = c("amika","cefta","dapto","eryth","genta","linez","merop","tobra")
 #'abgWithoutReserves = subset(getExampleAntibiogramDAI(),!is.element(drug_d,ReserveDrugs))
 #'EmpiricTherapyIndicesDAI(abgWithoutReserves)

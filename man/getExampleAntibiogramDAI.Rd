@@ -18,11 +18,15 @@ pdrAcinetoAbg = getExampleAntibiogramDAI()
 pdrAcinetoAbg$A.baumannii[!is.na(pdrAcinetoAbg$A.baumannii)]=100
 EmpiricTherapyIndicesDAI(pdrAcinetoAbg)
 
-#Save antibiogram template as a delimited text file - can be edited in Excel
+#Save the example antibiogram as a delimited text file that can be edited in Excel
 write.table(getExampleAntibiogramDAI(),file="myAntibiogram.txt",sep = "\\t",row.names=F)
 
-#Load revised antibiogram and calculate indices
 myRevisedAbg = read.table(file="myAntibiogram.txt",header=T)
 EmpiricTherapyIndicesDAI(myRevisedAbg)
+
+#Calculate the indices without reserve drugs:
+ReserveDrugs = c("amika","cefta","dapto","eryth","genta","linez","merop","tobra")
+abgWithoutReserves = subset(getExampleAntibiogramDAI(),!is.element(drug_d,ReserveDrugs))
+EmpiricTherapyIndicesDAI(abgWithoutReserves)
 }
 

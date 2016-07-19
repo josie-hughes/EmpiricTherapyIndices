@@ -6,7 +6,7 @@
 \alias{EmpiricTherapyIndices-package}
 \title{Calculate empiric therapy indices for device-associated infections.}
 \description{
-The method is described in Hughes et al. 2016. Empiric therapy indices: novel measures of the impact of antibiotic resistance on populations. BMJ Open.
+The method is described in Hughes et al. 2016. Empiric therapy indices: novel measures of the impact of antibiotic resistance on populations.
 }
 \details{
 The only functions you're likely to need from \pkg{EmpiricTherapyIndices} are
