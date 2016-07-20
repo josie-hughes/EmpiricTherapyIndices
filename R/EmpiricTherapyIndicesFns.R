@@ -4,6 +4,7 @@
 #' 
 #' @param Basket The basket of infections. getBasketDAI() for example.
 #' @param Drugs The set of available drugs. getDrugsDAI() for example.
+#' @param mixingPars A list of parameters for mixingFunction(), determining the impact of drug heterogeneity on the evolution of resistance. In the default case list(alpha=0) using multiple drugs does not slow the development of resistance. list(alpha=0.1) means that using 2 drugs instead of 1 slows the developement of resistance by 10\%. 
 #' @return Empiric options index (EOI) and empiric coverage index (ECI) for each site.
 #' @examples
 #'#Example calculation:
@@ -26,7 +27,7 @@
 #'abgWithoutReserves = subset(getExampleAntibiogramDAI(),!is.element(drug_d,ReserveDrugs))
 #'EmpiricTherapyIndicesDAI(abgWithoutReserves)
 #' @export
-EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getDrugsDAI(),wide=T){
+EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getDrugsDAI(),mixingPars=list(alpha=0),wide=T){
   #Antibiograms=abgWithoutReserves;Basket=getBasketDAI();Drugs=getDrugsDAI();wide=T
   if(wide){dat=EIMakeLong(Antibiograms,Basket,Drugs);Antibiograms=dat$Antibiograms;Basket=dat$Basket;Drugs=dat$Drugs}
   checkDataDAI(Antibiograms,Basket,Drugs)
@@ -34,7 +35,7 @@ EmpiricTherapyIndicesDAI<-function(Antibiograms,Basket=getBasketDAI(),Drugs=getD
   ECIy = ddply(coverage,.(site,syndrome_y,alpha_y),summarise,ECIy=max(V))
   ECI = ddply(ECIy,.(site),summarise,value=100*sum(alpha_y*ECIy))
   ECI$type="ECI"  
-  EOIy = ddply(coverage,.(site,syndrome_y,alpha_y),getEOIy)
+  EOIy = ddply(coverage,.(site,syndrome_y,alpha_y),getEOIy,mixingPars=mixingPars)
   EOI = ddply(EOIy,.(site),summarise,value=sum(alpha_y*V1))
   EOI$type="EOI"  
   indices = rbind(EOI,ECI)
@@ -137,6 +138,17 @@ VAPgp, 6,,3,,2,1,,,,,93,"
   BasketWide <- read.table(text=BasketText,header=TRUE,sep=",",stringsAsFactors=F)
   return(BasketWide)
 }
+#' The impact of mixing on the development of resistance, f(d).
+#' 
+#' @return f(d)
+#' @examples
+#' #Change the impact of antibiotic mixing by overwriting this function.
+#' #This should be decreasing function of $d$, with a value of 1 when $d=1$, and a minimum value of $>0$
+#' @export
+mixingFunction<-function(d,mixingPars){
+  #TO DO: pass function names as an argument 
+  return((1-mixingPars$alpha)^(d-1))
+}
 #################
 #internal functions
 checkDataDAI<-function(Antibiograms,Basket,Drugs){
@@ -158,11 +170,11 @@ checkDataDAI<-function(Antibiograms,Basket,Drugs){
   try(if(max(Antibiograms$resistance)>100) stop("Resistance in the antibiogram should not exceed 100%"))
   try(if(max(Antibiograms$resistance)<0) stop("Resistance in the antibiogram should not be less than 0%"))  
 }
-getEOIy<-function(covBit){
+getEOIy<-function(covBit,mixingPars){
   covBit=covBit[order(-covBit$V),]
   covBit$d = seq(1,nrow(covBit))
   covBit$Vdplus1=c(covBit$V[2:nrow(covBit)],0)
-  EOIy = sum(covBit$d*(covBit$V^2-covBit$Vdplus1^2))
+  EOIy = sum(covBit$d*(covBit$V^2-covBit$Vdplus1^2)/mixingFunction(covBit$d,mixingPars))
   return(EOIy)
 }
 getCoverage<-function(Antibiograms,Basket,Drugs){

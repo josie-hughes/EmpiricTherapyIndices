@@ -5,7 +5,7 @@
 \title{Calculate empiric therapy indices for device-associated infections.}
 \usage{
 EmpiricTherapyIndicesDAI(Antibiograms, Basket = getBasketDAI(),
-  Drugs = getDrugsDAI(), wide = T)
+  Drugs = getDrugsDAI(), mixingPars = list(alpha = 0), wide = T)
 }
 \arguments{
 \item{Antibiograms}{An antibiogram. getExampleAntibiograms() for example. Numbers are percent resistance (or non-susceptibility). One site is included in the example, but the algorithm can handle multiple sites.}
@@ -13,6 +13,8 @@ EmpiricTherapyIndicesDAI(Antibiograms, Basket = getBasketDAI(),
 \item{Basket}{The basket of infections. getBasketDAI() for example.}
 
 \item{Drugs}{The set of available drugs. getDrugsDAI() for example.}
+
+\item{mixingPars}{A list of parameters for mixingFunction(), determining the impact of drug heterogeneity on the evolution of resistance. In the default case list(alpha=0) using multiple drugs does not slow the development of resistance. list(alpha=0.1) means that using 2 drugs instead of 1 slows the developement of resistance by 10\%.}
 }
 \value{
 Empiric options index (EOI) and empiric coverage index (ECI) for each site.
