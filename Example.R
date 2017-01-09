@@ -1,6 +1,7 @@
 ##########################
 #This is an R script to install and demonstrate the EmpiricTherapyIndices package.
-#The methods are described in Hughes et al. 2016. Empiric therapy indices: novel measures of the impact of antibiotic resistance on populations.
+#The methods are described in Hughes et al. 2016. How to measure the impacts of antibiotic resistance and antibiotic development on empiric therapy: new composite indices.
+#http://bmjopen.bmj.com/content/6/12/e012040.abstract
 #The code can be viewed at https://github.com/josie-hughes/EmpiricTherapyIndices/blob/master/R/EmpiricTherapyIndicesFns.R.
 #Install the package:
 install.packages(c("devtools"))
